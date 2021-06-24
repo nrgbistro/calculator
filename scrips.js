@@ -1,3 +1,6 @@
+let mem = "";
+
+
 function add(n1, n2) {
 	return n1 + n2;
 }
@@ -35,28 +38,42 @@ function operate(operator, n1, n2) {
 }
 
 function init() {
+	// Set constants by IDs
 	const numberContainer = document.querySelector("#numberContainer");
 	const operatorContainer = document.querySelector("#operatorContainer");
 
 	// Numbers button setup
-	for (let i = 0; i < 9; i++) {
+	for (let i = 1; i <= 9; i++) {
+		let thing = #("#numberContainer").add("div").classList.add(`${i}`);
+		thing.text(`${i}`);
+
 		let numberButton = document.createElement("div");
 		numberButton.classList.add("number");
-		numberButton.id = `${i + 1}`;
-		numberButton.textContent = `${i + 1}`;
+		numberButton.id = `${i}`;
+		numberButton.textContent = `${i}`;
+		numberButton.onclick(numberButtonClick(i));
+
 		numberContainer.appendChild(numberButton);
 	}
 
+	// Operator button setup
 	for (let i = 0; i < 5; i++) {
 		const symbolsArray = ["+", "-", "X", "/", "="];
 		let operatorButton = document.createElement("div");
 		operatorButton.classList.add("operator");
-		operatorButton.id= `${symbolsArray[i]}`;
+		operatorButton.id = `${symbolsArray[i]}`;
 		operatorButton.textContent = `${symbolsArray[i]}`;
 		operatorContainer.appendChild(operatorButton);
 	}
 }
 
-init();
+$(document).ready();
+{
+	init();
+}
 
-console.log(operate("/", 17, 3));
+
+function numberButtonClick(n) {
+	mem += n;
+	return n;
+}
