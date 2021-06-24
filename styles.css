@@ -1,7 +1,11 @@
+h1 {
+    font-size: 64px;
+}
+
+
 #output {
     height: 15vh;
 }
-
 
 #numberContainer {
     display: grid;
@@ -18,11 +22,18 @@
     line-height: 8vmin;
 }
 
+#numberContainer #0 {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 4;
+}
+
 #operatorContainer {
     display: grid;
     grid-template-columns: auto;
     grid-gap: 10px;
-    background-color: #2196F3;
+    background-color: green;
     padding: 10px;
 }
 
@@ -48,8 +59,10 @@
 }
 
 #mainContainer > h1 {
-    font-size: 64px;
-    font-family: SansSerif;
+    margin: 0;
+    width: 100%;
+    font-size: 5em;
+    font-family: "Tahoma", Arial;
     color: white;
 }
 

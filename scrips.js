@@ -1,12 +1,11 @@
 // Set constants by IDs
-const numberContainer = document.querySelector("#numberContainer");
-const operatorContainer = document.querySelector("#operatorContainer");
-const symbols = ["+", "-", "*", "/", "="];
-const idNames = ["plus", "minus", "multiply", "divide", "equals"];
+const operatorSymbols = ["Clear", "+", "-", "*", "/", "="];
+const operatorIdNames = ["clear", "plus", "minus", "multiply", "divide", "equals"];
 
 
 // Memory for current operation
 let mem = "";
+const output = $("#output h1");
 
 function add(n1, n2) {
 	return n1 + n2;
@@ -36,36 +35,38 @@ function operate(operator, n1, n2) {
 			return divide(n1, n2);
 		default:
 			console.log("NO OPERATOR");
-			return;
+			return "NaN";
 	}
 }
 
 function init() {
-
-
 	// Numbers button setup
-	for (let i = 1; i <= 9; i++) {
+	for (let i = 1; i <= 10; i++) {
 		// Create new button with id of i
 		createButton(i, "#numberContainer");
 	}
 
 	// Operator button setup
-	for (let i = 0; i < 5; i++) {
+	for (let i = 0; i < 6; i++) {
 		// Create new button with id of currentSymbol
-		const currentSymbol = "#" + symbols[i];
 		createButton(i, "#operatorContainer");
 	}
 }
-
 
 // Creates most buttons on the calculator
 function createButton(i, target) {
 	let newButton = document.createElement("div");
 	let $button = null;
-	if (target === "#operatorContainer" && symbols[i] === "=") {
+	if (target === "#operatorContainer" && operatorSymbols[i] === "Clear") {
+		createClearButton();
+		return;
+	} else if (target === "#operatorContainer" && operatorSymbols[i] === "=") {
 		createEqualsButton();
 		return;
 	} else if (target === "#numberContainer") {
+		if (i === 10) {
+			i = 0;
+		}
 		newButton.id = String(i);
 		document.querySelector(target).appendChild(newButton);
 
@@ -73,18 +74,27 @@ function createButton(i, target) {
 		$button = $("#" + i);
 		$button.text(i);
 	} else {
-		newButton.id = idNames[i];
+		newButton.id = operatorIdNames[i];
 		document.querySelector(target).appendChild(newButton);
 
 		// Jquery selector for new button
-		$button = $("#" + idNames[i]);
-		$button.text(symbols[i]);
+		$button = $("#" + operatorIdNames[i]);
+		$button.text(operatorSymbols[i]);
 	}
 
 	// Click event for operator buttons
 	$button.click(function (n) {
-		mem += n.currentTarget.textContent;
-		updateOutput();
+		let clickedValue = String(n.currentTarget.textContent);
+
+		let outputText = String(output.text());
+		if (outputText === "NaN" || outputText === "Infinity" || outputText === "UNABLE TO DIVIDE BY ZERO BITCH") {
+			outputText = "";
+			mem = "";
+		}
+
+		mem += clickedValue;
+		outputText += clickedValue;
+		output.text(outputText);
 	});
 }
 
@@ -97,23 +107,40 @@ function createEqualsButton() {
 	// Jquery selector for button
 	let $button = $("#equals");
 	$button.text("=");
-	$button.click(parseOutput);
+	$button.click(evaluateMem);
+}
 
+function createClearButton() {
+	let newButton = document.createElement("div");
+	newButton.id = "clear";
+	document.querySelector("#operatorContainer").appendChild(newButton);
+
+	// Jquery selector for button
+	let $button = $("#clear");
+	$button.text("Clear");
+	$button.click(clearAll);
 }
 
 // Parses user input and clears mem
-function parseOutput() {
+function evaluateMem() {
 	let index = 0;
 	let memArray = mem.split("");
 	for (let i = 0; i < memArray.length; i++) {
-		if(symbols.includes(memArray[i])) {
+		if (operatorSymbols.includes(memArray[i])) {
 			index = i;
 		}
 	}
-	let n1 = mem.substring(0, index);
-	let n2 = mem.substring(index + 1, mem.length);
-	mem = operate(memArray[index], Number(n1), Number(n2));
-	updateOutput();
+	let n1 = Number(mem.substring(0, index));
+	let n2 = Number(mem.substring(index + 1, mem.length));
+
+	if (memArray[index] === "/" && n2 === 0) {
+		output.text("UNABLE TO DIVIDE BY ZERO BITCH");
+	} else {
+		output.text(operate(memArray[index], n1, n2));
+	}
+	if (output.text() == Number(output.text())) {
+		mem = String(output.text());
+	}
 }
 
 $(document).ready();
@@ -122,6 +149,15 @@ $(document).ready();
 }
 
 
-function updateOutput() {
-	$("#output").children(0).text(mem);
+function clearAll() {
+	clearScreen();
+	clearMem();
+}
+
+function clearScreen() {
+	output.text("");
+}
+
+function clearMem() {
+	mem = "";
 }
