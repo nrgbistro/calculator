@@ -64,6 +64,7 @@ function createButton(i, target) {
 	let $button = null;
 	if (target === "#operatorContainer" && symbols[i] === "=") {
 		createEqualsButton();
+		return;
 	} else if (target === "#numberContainer") {
 		newButton.id = String(i);
 		document.querySelector(target).appendChild(newButton);
@@ -89,9 +90,31 @@ function createButton(i, target) {
 
 // Creates equals button on calculator
 function createEqualsButton() {
+	let newButton = document.createElement("div");
+	newButton.id = "equals";
+	document.querySelector("#operatorContainer").appendChild(newButton);
+
+	// Jquery selector for button
+	let $button = $("#equals");
+	$button.text("=");
+	$button.click(parseOutput);
 
 }
 
+// Parses user input and clears mem
+function parseOutput() {
+	let index = 0;
+	let memArray = mem.split("");
+	for (let i = 0; i < memArray.length; i++) {
+		if(symbols.includes(memArray[i])) {
+			index = i;
+		}
+	}
+	let n1 = mem.substring(0, index);
+	let n2 = mem.substring(index + 1, mem.length);
+	mem = operate(memArray[index], Number(n1), Number(n2));
+	updateOutput();
+}
 
 $(document).ready();
 {
